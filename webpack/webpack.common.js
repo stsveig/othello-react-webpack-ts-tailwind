@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = {
   entry: path.resolve(__dirname, "..", "./src/index.tsx"),
   resolve: {
-    extensions: [".tsx", ".ts", ".js", ".css"],
+    extensions: [".tsx", ".ts", ".js"],
   },
   module: {
     rules: [
@@ -37,6 +37,7 @@ module.exports = {
     path: path.resolve(__dirname, "..", "./build"),
     filename: "bundle.js",
     publicPath: "/",
+    clean: true,
   },
   plugins: [
     new HtmlWebpackPlugin({
