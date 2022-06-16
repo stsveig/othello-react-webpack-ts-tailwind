@@ -8,14 +8,21 @@ export type Cell = {
   state: CellState;
 };
 
-export function createInitialBoard(rowLength = 8, colLength = 8): Cell[][] {
-  const initialCells: Cell[][] = Array.from({ length: rowLength }).map(
+export function createInitialBoard(
+  rowLength: number,
+  colLength: number,
+  initialCells: Cell[]
+): Cell[][] {
+  const initialBoard: Cell[][] = Array.from({ length: rowLength }).map(
     (_, row) =>
       Array.from({ length: colLength }).map((_, col) => {
         return { row, col, state: "empty" };
       })
   );
-  return initialCells;
+
+  putInitialCellsToBoard(initialCells, initialBoard);
+
+  return initialBoard;
 }
 
 export function iterateOverCells(
@@ -26,5 +33,11 @@ export function iterateOverCells(
     row.forEach((cell) => {
       callback(cell);
     });
+  });
+}
+
+function putInitialCellsToBoard(initialCells: Cell[], initialBoard: Cell[][]) {
+  initialCells.forEach(({ row, col, state }) => {
+    initialBoard[row][col].state = state;
   });
 }

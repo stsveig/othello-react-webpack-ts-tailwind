@@ -14,9 +14,19 @@ export type GameState = {
     }
 );
 
-export function createInitialGameState(): GameState {
+const initialCells: Cell[] = [
+  { row: 3, col: 3, state: "white" },
+  { row: 4, col: 4, state: "white" },
+  { row: 3, col: 4, state: "black" },
+  { row: 4, col: 3, state: "black" },
+];
+
+export function createInitialGameState(
+  rowLength: number,
+  colLength: number
+): GameState {
   return {
-    board: createInitialBoard(),
+    board: createInitialBoard(rowLength, colLength, initialCells),
     state: "playerOneTurn",
     playerOnePiece: "white",
     playerTwoPiece: "black",

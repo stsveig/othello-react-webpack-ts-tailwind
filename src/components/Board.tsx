@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useOthelloGameState } from "../context/OthelloContext";
+import { Cell } from "../othelloLogic/board";
 
 import BoardPiece from "./BoardPiece";
 
 const Board: React.FunctionComponent = () => {
   const gameState = useOthelloGameState();
 
-  function handleCellClick(cell) {
+  function handleCellClick(cell: Cell) {
     console.log(cell);
   }
 

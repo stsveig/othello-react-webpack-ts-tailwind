@@ -6,17 +6,18 @@ import {
   useMemo,
 } from "react";
 
-import {
-  createInitialGameState,
-  GameState,
-  getScore,
-  Piece,
-} from "../othelloLogic";
+import { createInitialGameState, GameState, getScore } from "../othelloLogic";
+import { Piece } from "../othelloLogic/board";
+
+const ROW_LENGTH = 8;
+const COL_LENGTH = 8;
 
 const OthelloContext = createContext<GameState | undefined>(undefined);
 
 export function OthelloProvider({ children }: PropsWithChildren) {
-  const [game, setGame] = useState(createInitialGameState);
+  const [game, setGame] = useState(() =>
+    createInitialGameState(ROW_LENGTH, COL_LENGTH)
+  );
 
   return (
     <OthelloContext.Provider value={game}>{children}</OthelloContext.Provider>
