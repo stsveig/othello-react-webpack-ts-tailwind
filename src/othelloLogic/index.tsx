@@ -26,8 +26,16 @@ export function createInitialGameState(): GameState {
 function getValidMovesForCurrentPiece(board: Cell[][], piece: Piece) {
   const validMoves = [];
   iterateOverCells(board, (cell) => {
-    is;
+    if (isMoveLegal(board, cell, piece)) {
+      validMoves.push(cell);
+    }
   });
+
+  if (!validMoves.length) {
+    return undefined;
+  }
+
+  return validMoves;
 }
 
 export function getScore(board: Cell[][], piece: Piece) {

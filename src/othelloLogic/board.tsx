@@ -8,9 +8,14 @@ export type Cell = {
   state: CellState;
 };
 
-export function createInitialBoard(): Cell[][] {
-  // TODO
-  return [];
+export function createInitialBoard(rowLength = 8, colLength = 8): Cell[][] {
+  const initialCells: Cell[][] = Array.from({ length: rowLength }).map(
+    (_, row) =>
+      Array.from({ length: colLength }).map((_, col) => {
+        return { row, col, state: "empty" };
+      })
+  );
+  return initialCells;
 }
 
 export function iterateOverCells(
