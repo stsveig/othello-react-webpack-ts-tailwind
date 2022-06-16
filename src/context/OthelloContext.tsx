@@ -6,7 +6,12 @@ import {
   useMemo,
 } from "react";
 
-import { createInitialGameState, GameState, getScore } from "../othelloLogic";
+import {
+  createInitialGameState,
+  GameState,
+  getScore,
+  getValidPieceMoves,
+} from "../othelloLogic";
 import { Piece } from "../othelloLogic/board";
 
 const ROW_LENGTH = 8;
@@ -32,6 +37,14 @@ export function useOthelloGameState() {
   }
 
   return value;
+}
+
+export function useValidPieceMoves(piece: Piece) {
+  const state = useOthelloGameState();
+
+  return useMemo(() => {
+    getValidPieceMoves(state.board, piece);
+  }, [piece, state.board]);
 }
 
 export function usePieceScore(piece: Piece) {

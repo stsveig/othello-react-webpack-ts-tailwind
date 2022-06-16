@@ -1,4 +1,12 @@
-import { Cell, createInitialBoard, iterateOverCells, Piece } from "./board";
+import {
+  addOffsetToCellPosition,
+  Cell,
+  CellPosition,
+  createInitialBoard,
+  iterateOverCells,
+  offSets,
+  Piece,
+} from "./board";
 
 export type GameState = {
   board: Cell[][];
@@ -33,10 +41,14 @@ export function createInitialGameState(
   };
 }
 
-function getValidMovesForCurrentPiece(board: Cell[][], piece: Piece) {
-  const validMoves = [];
-  iterateOverCells(board, (cell) => {
-    if (isMoveLegal(board, cell, piece)) {
+export function getValidPieceMoves(board: Cell[][], piece: Piece) {
+  const validMoves: Cell[] = [];
+  // const validMoves: CellPosition[] = [];
+
+  console.log("my logic is fucked", board, piece);
+
+  iterateOverCells(board, (cell: Cell) => {
+    if (isPieceMoveLegal(board, cell, piece)) {
       validMoves.push(cell);
     }
   });
@@ -46,6 +58,58 @@ function getValidMovesForCurrentPiece(board: Cell[][], piece: Piece) {
   }
 
   return validMoves;
+}
+
+function isPieceMoveLegal(board: Cell[][], cell: Cell, piece: Piece): boolean {
+  if (cell.state !== "empty") return false;
+
+  for (const offset of offSets) {
+    if (!isMoveWithinBoard(cell, offset)) {
+      continue;
+    }
+
+    // start testing direction -> one step at a time
+    let nextCellPosition = addOffsetToCellPosition(cell, offset);
+    let cellsTested = 0;
+
+    const otherPiece = piece === "black" ? "white" : "black";
+
+    while (
+      board[nextCellPosition.row][nextCellPosition.col].state === otherPiece &&
+      isMoveWithinBoard(nextCellPosition, offset)
+    ) {
+      // step into next position
+      nextCellPosition = addOffsetToCellPosition(nextCellPosition, offset);
+      cellsTested++;
+    }
+
+    if (
+      cellsTested > 0 &&
+      board[nextCellPosition.row][nextCellPosition.col].state === piece
+    ) {
+      // a valid move have being found
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// function isCellEmpty(cell: Cell): boolean {
+//   return cell.state === "empty";
+// }
+
+// TODO: check based on 8x8 board!
+function isMoveWithinBoard(
+  { col, row }: CellPosition,
+  offset: CellPosition
+): boolean {
+  if (col === 0 && offset.col === -1) return false;
+  if (col === 7 && offset.col === 1) return false;
+  if (row === 0 && offset.row === -1) return false;
+  if (row === 7 && offset.row === 1) return false;
+
+  return true;
 }
 
 export function getScore(board: Cell[][], piece: Piece) {
