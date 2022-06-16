@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Game } from "./components/Game";
+import { OthelloProvider } from "./context/OthelloContext";
 import "./tailwind.css";
 
 export const App = () => {
@@ -27,8 +28,10 @@ export const App = () => {
   }, []);
 
   return (
-    <div className="px-1">
-      <Game />
+    <div className="">
+      <OthelloProvider>
+        <Game />
+      </OthelloProvider>
     </div>
   );
 };
