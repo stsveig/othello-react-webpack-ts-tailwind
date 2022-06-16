@@ -1,18 +1,34 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import { Game } from "./components/Game";
 import "./tailwind.css";
 
-const App = () => {
+export const App = () => {
   console.log("hello from App.tsx:5");
 
-  const [count, setCount] = useState(0);
+  useEffect(() => {
+    const updateViewportHeightVariable = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    };
+
+    // Run initialiation on page load
+    updateViewportHeightVariable();
+
+    window.addEventListener("resize", updateViewportHeightVariable);
+    window.addEventListener("orientationchange", updateViewportHeightVariable);
+
+    return () => {
+      window.removeEventListener("resize", updateViewportHeightVariable);
+      window.removeEventListener(
+        "orientationchange",
+        updateViewportHeightVariable
+      );
+    };
+  }, []);
 
   return (
-    <div className="bg-[#eee] h-[100vh] flex items-center justify-center flex-col">
-      <h2>othello</h2>
-      <h2>{count}</h2>
-      <button onClick={() => setCount((count) => count + 1)}>increase</button>
+    <div className="px-1">
+      <Game />
     </div>
   );
 };
-
-export default App;
