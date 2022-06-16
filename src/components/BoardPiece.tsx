@@ -7,14 +7,20 @@ type BoardPieceProps = {
 
 const BoardPiece = ({ cell }: BoardPieceProps) => {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className={`${cell.state === "empty" ? "opacity-0" : ""} `}
-      viewBox="0 0 20 20"
-      fill={cell.state}
-    >
-      <circle cx="10" cy="10" r="9" />
-    </svg>
+    <>
+      {cell.state !== "empty" ? (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          // className={`${cell.state === "empty" ? "opacity-0" : ""} `}
+          viewBox="0 0 20 20"
+          fill={cell.state}
+        >
+          <circle cx="10" cy="10" r="9" />
+        </svg>
+      ) : (
+        ""
+      )}
+    </>
   );
 };
 

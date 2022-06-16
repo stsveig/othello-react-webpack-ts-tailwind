@@ -28,7 +28,7 @@ export const App = () => {
   }, []);
 
   return (
-    <div className="">
+    <div className="max-w-lg mx-auto bg-white h-full">
       <OthelloProvider>
         <Game />
       </OthelloProvider>

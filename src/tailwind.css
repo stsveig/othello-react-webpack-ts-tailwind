@@ -2,7 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  overflow: hidden;
+}
+
 #root {
   height: calc(var(--vh, 1vh) * 100);
-  /* background-color: black; */
+  background-color: black;
 }
