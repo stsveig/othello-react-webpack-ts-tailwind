@@ -9,7 +9,7 @@ export function Game() {
   console.log(gameState);
 
   return (
-    <div className="bg-emerald-900 flex flex-col items-center h-full">
+    <div className="flex flex-col items-center h-full">
       <GameStats />
       <Board />
     </div>

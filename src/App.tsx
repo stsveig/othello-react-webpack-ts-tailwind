@@ -4,8 +4,6 @@ import { OthelloProvider } from "./context/OthelloContext";
 import "./tailwind.css";
 
 export const App = () => {
-  console.log("hello from App.tsx:5");
-
   useEffect(() => {
     const updateViewportHeightVariable = () => {
       const vh = window.innerHeight * 0.01;
@@ -28,7 +26,7 @@ export const App = () => {
   }, []);
 
   return (
-    <div className="max-w-lg mx-auto bg-white h-full">
+    <div className="max-w-lg mx-auto h-full">
       <OthelloProvider>
         <Game />
       </OthelloProvider>

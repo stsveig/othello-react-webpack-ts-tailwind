@@ -6,20 +6,16 @@ type BoardPieceProps = {
 };
 
 const BoardPiece = ({ cell }: BoardPieceProps) => {
+  let pieceColor = "";
+  if (cell.state === "empty") {
+    //
+  } else {
+    pieceColor = cell.state === "black" ? "bg-black" : "bg-white";
+  }
+
   return (
     <>
-      {cell.state !== "empty" ? (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          // className={`${cell.state === "empty" ? "opacity-0" : ""} `}
-          viewBox="0 0 20 20"
-          fill={cell.state}
-        >
-          <circle cx="10" cy="10" r="9" />
-        </svg>
-      ) : (
-        ""
-      )}
+      <div className={`${pieceColor} rounded-full w-[90%] h-[90%]`}></div>
     </>
   );
 };
