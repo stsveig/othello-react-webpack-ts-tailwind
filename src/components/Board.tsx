@@ -13,7 +13,7 @@ const Board: React.FunctionComponent = () => {
 
   return (
     <div
-      className={` grid grid-cols-[repeat(8,_1fr)] max-h-full w-full aspect-square gap-[1px] select-none`}
+      className={`col-span-2 grid grid-cols-[repeat(8,_1fr)] max-h-full w-full aspect-square gap-[1px] select-none`}
     >
       {gameState.board.map((row, rowIndex) => {
         return row.map((cell, colIndex) => {
@@ -21,7 +21,7 @@ const Board: React.FunctionComponent = () => {
             <div
               key={`${rowIndex}-${colIndex}`}
               id={`${rowIndex}-${colIndex}`}
-              className="bg-green-600 hover:bg-green-500 w-full cursor-pointer aspect-square"
+              className="bg-green-600 hover:bg-green-500 w-full cursor-pointer aspect-square flex items-center justify-center"
               onClick={() => handleCellClick(cell)}
             >
               <BoardPiece cell={cell} />
