@@ -11,7 +11,6 @@ import {
   currentPieceTurn,
   GameState,
   getScore,
-  getValidPieceMoves,
   isCurrentPieceTurn,
 } from "../othelloLogic";
 import { Piece } from "../othelloLogic/board";
@@ -55,14 +54,6 @@ export function useIsCurrentPieceTurn(piece: Piece) {
   return useMemo(() => {
     return isCurrentPieceTurn(state.state, piece);
   }, [piece, state.state]);
-}
-
-export function useValidPieceMoves(piece: Piece) {
-  const state = useOthelloGameState();
-
-  return useMemo(() => {
-    return getValidPieceMoves(state.board, piece);
-  }, [piece, state.board]);
 }
 
 export function usePieceScore(piece: Piece) {

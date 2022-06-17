@@ -11,7 +11,7 @@ type BoardPieceProps = {
 const BoardPiece = ({ cell }: BoardPieceProps) => {
   const currentPieceTurn = useCurrentPieceTurn();
 
-  let pieceUI = "";
+  let pieceStyle = "";
 
   const basicPieceStyle = "rounded-full w-[85%] h-[85%]";
 
@@ -21,11 +21,11 @@ const BoardPiece = ({ cell }: BoardPieceProps) => {
     } else {
       // current piece is 'black' | 'white'
       if (isCellHasValidMovesFor(currentPieceTurn, cell)) {
-        pieceUI = "border border-[#303030] opacity-60";
+        pieceStyle = "border border-[#303030] opacity-60";
       }
     }
   } else {
-    pieceUI = cell.state === "black" ? "bg-black" : "bg-white";
+    pieceStyle = cell.state === "black" ? "bg-black" : "bg-white";
   }
 
   function isCellHasValidMovesFor(currentPieceTurn: Piece, cell: Cell) {
@@ -38,7 +38,7 @@ const BoardPiece = ({ cell }: BoardPieceProps) => {
 
   return (
     <>
-      <div className={`${pieceUI} ${basicPieceStyle}`}></div>
+      <div className={`${basicPieceStyle} ${pieceStyle}`}></div>
     </>
   );
 };

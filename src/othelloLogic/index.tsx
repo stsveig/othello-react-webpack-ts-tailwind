@@ -7,6 +7,7 @@ import {
   offSets,
   Piece,
   subtractOffsetFromCellPosition,
+  ValidMove,
 } from "./board";
 
 export type PieceTurn = "whiteTurn" | "blackTurn";
@@ -46,108 +47,107 @@ export function createInitialGameState(
   };
 }
 
-export function getValidPieceMoves(board: Cell[][], piece: Piece) {
-  // const validMoves: Cell[] = [];
-  const validMoves: CellPosition[] = [];
-
-  iterateOverCells(board, (cell: Cell) => {
-    if (isPieceMoveLegal(board, cell, piece)) {
-      validMoves.push(cell);
-    }
-  });
-
-  if (!validMoves.length) {
-    return undefined;
-  }
-
-  return validMoves;
-}
-
-function isPieceMoveLegal(board: Cell[][], cell: Cell, piece: Piece): boolean {
-  if (cell.state !== "empty") return false;
-
+export function setValidPieceMoves(board: Cell[][], piece: Piece) {
   const otherPiece = getOtherPiece(piece);
-
-  for (const offset of offSets) {
-    if (!isMoveWithinBoard(cell, offset)) {
-      continue;
-    }
-
-    // start testing direction -> one step at a time
-    let nextCellPosition = addOffsetToCellPosition(cell, offset);
-    let cellsTested = 0;
-
-    while (
-      board[nextCellPosition.row][nextCellPosition.col].state === otherPiece &&
-      isMoveWithinBoard(nextCellPosition, offset)
-    ) {
-      // step into next position
-      nextCellPosition = addOffsetToCellPosition(nextCellPosition, offset);
-      cellsTested++;
-    }
-
-    // a valid move have being found
-    if (
-      cellsTested > 0 &&
-      board[nextCellPosition.row][nextCellPosition.col].state === piece
-    ) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-// check isPieceMoveLegal before making the move
-// even better refactor it for 3 diff fn or 2 that gets a call back
-export function makeTheMove(board: Cell[][], cell: Cell, piece: Piece) {
-  const newBoard = [...board];
-  newBoard[cell.row][cell.col].state = piece;
-
-  const otherPiece = getOtherPiece(piece);
-
-  for (const offset of offSets) {
-    if (!isMoveWithinBoard(cell, offset)) {
-      continue;
-    }
-
-    // start testing direction -> one step at a time
-    let nextCellPosition = addOffsetToCellPosition(cell, offset);
-    let cellsTested = 0;
-
-    while (
-      newBoard[nextCellPosition.row][nextCellPosition.col].state ===
-        otherPiece &&
-      isMoveWithinBoard(nextCellPosition, offset)
-    ) {
-      // step into next position
-      nextCellPosition = addOffsetToCellPosition(nextCellPosition, offset);
-      cellsTested++;
-    }
-
-    // a valid move have being found
-    if (
-      cellsTested > 0 &&
-      newBoard[nextCellPosition.row][nextCellPosition.col].state === piece
-    ) {
-      for (; cellsTested > 0; cellsTested--) {
-        nextCellPosition = subtractOffsetFromCellPosition(
-          nextCellPosition,
-          offset
-        );
-        newBoard[nextCellPosition.row][nextCellPosition.col].state = piece;
+  // iterating each cell
+  iterateOverCells(board, (cell) => {
+    // [] is cell empty if not return -> next cell
+    if (cell.state !== "empty") return;
+    // iterating each offset
+    for (const offset of offSets) {
+      // [] is move within board
+      if (!isMoveWithinBoard(cell, offset)) {
+        continue;
+      }
+      // [] is current offset valid move
+      const { endPosition, cellsTested } = testOffsetForValidMove(
+        board,
+        cell,
+        offset,
+        otherPiece
+      );
+      // [] if a valid move have being found
+      if (isValidMove(board, endPosition, cellsTested, piece)) {
+        // [] set valid move on the cell
+        setValidMoveToCell(cell, endPosition, offset, piece);
       }
     }
-  }
-
-  return newBoard;
+  });
 }
 
-// function isCellEmpty(cell: Cell): boolean {
-//   return cell.state === "empty";
-// }
+function isValidMove(
+  board: Cell[][],
+  endPosition: CellPosition,
+  cellsTested: number,
+  piece: Piece
+) {
+  return (
+    cellsTested > 0 && board[endPosition.row][endPosition.col].state === piece
+  );
+}
 
-// TODO: check based on 8x8 board!
+function testOffsetForValidMove(
+  board: Cell[][],
+  cell: CellPosition,
+  offset: CellPosition,
+  otherPiece: Piece
+) {
+  let nextCellPosition = addOffsetToCellPosition(cell, offset);
+  let cellsTested = 0;
+
+  // start testing direction -> one step at a time
+  while (
+    board[nextCellPosition.row][nextCellPosition.col].state === otherPiece &&
+    isMoveWithinBoard(nextCellPosition, offset)
+  ) {
+    // step into next position
+    nextCellPosition = addOffsetToCellPosition(nextCellPosition, offset);
+    cellsTested++;
+  }
+
+  return { endPosition: nextCellPosition, cellsTested };
+}
+
+function setValidMoveToCell(
+  startPosition: CellPosition,
+  endPosition: CellPosition,
+  offset: CellPosition,
+  piece: Piece
+) {
+  if (piece === "black") {
+    const validBlackMove: ValidMove = {
+      start: { row: startPosition.row, col: startPosition.col },
+      end: { row: endPosition.row, col: endPosition.col },
+      offset,
+    };
+    console.log(validBlackMove);
+  } else {
+    const validWhiteMove: ValidMove = {
+      start: { row: startPosition.row, col: startPosition.col },
+      end: { row: endPosition.row, col: endPosition.col },
+      offset,
+    };
+    console.log(validWhiteMove);
+  }
+}
+
+function flipCells() {
+  // only if a valid move have being found
+  if (
+    cellsTested > 0 &&
+    newBoard[nextCellPosition.row][nextCellPosition.col].state === piece
+  ) {
+    for (; cellsTested > 0; cellsTested--) {
+      nextCellPosition = subtractOffsetFromCellPosition(
+        nextCellPosition,
+        offset
+      );
+      newBoard[nextCellPosition.row][nextCellPosition.col].state = piece;
+    }
+  }
+}
+
+// [] check based on 8x8 board!
 function isMoveWithinBoard(
   { col, row }: CellPosition,
   offset: CellPosition
