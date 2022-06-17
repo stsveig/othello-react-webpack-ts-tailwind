@@ -7,11 +7,25 @@ export type CellPosition = {
   col: number;
 };
 
+type Move = {
+  start: CellPosition;
+  end: CellPosition;
+  offset: CellPosition;
+};
+
+export type ValidMove = Move;
+
 export type Cell = {
   row: number;
   col: number;
-  state: CellState;
-};
+} & (
+  | { state: Piece; validBlackMoves?: undefined; validWhiteMoves?: undefined }
+  | {
+      state: "empty";
+      validBlackMoves?: ValidMove[];
+      validWhiteMoves?: ValidMove[];
+    }
+);
 
 export function createInitialBoard(
   rowLength: number,

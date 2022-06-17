@@ -8,9 +8,11 @@ import {
 
 import {
   createInitialGameState,
+  currentPieceTurn,
   GameState,
   getScore,
   getValidPieceMoves,
+  isCurrentPieceTurn,
 } from "../othelloLogic";
 import { Piece } from "../othelloLogic/board";
 
@@ -39,11 +41,27 @@ export function useOthelloGameState() {
   return value;
 }
 
+export function useCurrentPieceTurn() {
+  const state = useOthelloGameState();
+
+  return useMemo(() => {
+    return currentPieceTurn(state.state);
+  }, [state.state]);
+}
+
+export function useIsCurrentPieceTurn(piece: Piece) {
+  const state = useOthelloGameState();
+
+  return useMemo(() => {
+    return isCurrentPieceTurn(state.state, piece);
+  }, [piece, state.state]);
+}
+
 export function useValidPieceMoves(piece: Piece) {
   const state = useOthelloGameState();
 
   return useMemo(() => {
-    getValidPieceMoves(state.board, piece);
+    return getValidPieceMoves(state.board, piece);
   }, [piece, state.board]);
 }
 
@@ -51,6 +69,6 @@ export function usePieceScore(piece: Piece) {
   const state = useOthelloGameState();
 
   return useMemo(() => {
-    getScore(state.board, piece);
+    return getScore(state.board, piece);
   }, [piece, state.board]);
 }

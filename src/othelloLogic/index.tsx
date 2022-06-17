@@ -9,19 +9,23 @@ import {
   subtractOffsetFromCellPosition,
 } from "./board";
 
+export type PieceTurn = "whiteTurn" | "blackTurn";
+
+export type TurnState = PieceTurn | "gameOver";
+
 export type GameState = {
   board: Cell[][];
-  state: "playerOneTurn" | "playerTwoTurn" | "gameOver";
-} & (
-  | {
-      playerOnePiece: "black";
-      playerTwoPiece: "white";
-    }
-  | {
-      playerOnePiece: "white";
-      playerTwoPiece: "black";
-    }
-);
+  // state: "playerOneTurn" | "playerTwoTurn" | "gameOver";
+  // state: "opponentOneTurn" | "opponentTwoTurn" | "gameOver";
+  state: TurnState;
+} & {
+  whiteTeam: string;
+  blackTeam: string;
+};
+// | {
+//     playerOnePiece: "white";
+//     playerTwoPiece: "black";
+//   }
 
 const initialCells: Cell[] = [
   { row: 3, col: 3, state: "white" },
@@ -36,17 +40,15 @@ export function createInitialGameState(
 ): GameState {
   return {
     board: createInitialBoard(rowLength, colLength, initialCells),
-    state: "playerOneTurn",
-    playerOnePiece: "white",
-    playerTwoPiece: "black",
+    state: "blackTurn",
+    blackTeam: "user",
+    whiteTeam: "another user",
   };
 }
 
 export function getValidPieceMoves(board: Cell[][], piece: Piece) {
-  const validMoves: Cell[] = [];
-  // const validMoves: CellPosition[] = [];
-
-  console.log("my logic is fucked", board, piece);
+  // const validMoves: Cell[] = [];
+  const validMoves: CellPosition[] = [];
 
   iterateOverCells(board, (cell: Cell) => {
     if (isPieceMoveLegal(board, cell, piece)) {
@@ -156,6 +158,21 @@ function isMoveWithinBoard(
   if (row === 7 && offset.row === 1) return false;
 
   return true;
+}
+
+export function currentPieceTurn(turnState: TurnState): Piece | "gameOver" {
+  if (turnState === "gameOver") {
+    return "gameOver";
+  } else {
+    if (turnState === "blackTurn") {
+      return "black";
+    }
+    return "white";
+  }
+}
+
+export function isCurrentPieceTurn(turn: TurnState, piece: Piece): boolean {
+  return turn.split("Turn")[0] !== piece;
 }
 
 export function getScore(board: Cell[][], piece: Piece) {
