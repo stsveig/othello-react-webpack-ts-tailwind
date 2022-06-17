@@ -6,6 +6,7 @@ import {
   iterateOverCells,
   offSets,
   Piece,
+  subtractOffsetFromCellPosition,
 } from "./board";
 
 export type GameState = {
@@ -63,6 +64,8 @@ export function getValidPieceMoves(board: Cell[][], piece: Piece) {
 function isPieceMoveLegal(board: Cell[][], cell: Cell, piece: Piece): boolean {
   if (cell.state !== "empty") return false;
 
+  const otherPiece = getOtherPiece(piece);
+
   for (const offset of offSets) {
     if (!isMoveWithinBoard(cell, offset)) {
       continue;
@@ -71,8 +74,6 @@ function isPieceMoveLegal(board: Cell[][], cell: Cell, piece: Piece): boolean {
     // start testing direction -> one step at a time
     let nextCellPosition = addOffsetToCellPosition(cell, offset);
     let cellsTested = 0;
-
-    const otherPiece = piece === "black" ? "white" : "black";
 
     while (
       board[nextCellPosition.row][nextCellPosition.col].state === otherPiece &&
@@ -83,16 +84,61 @@ function isPieceMoveLegal(board: Cell[][], cell: Cell, piece: Piece): boolean {
       cellsTested++;
     }
 
+    // a valid move have being found
     if (
       cellsTested > 0 &&
       board[nextCellPosition.row][nextCellPosition.col].state === piece
     ) {
-      // a valid move have being found
       return true;
     }
   }
 
   return false;
+}
+
+// check isPieceMoveLegal before making the move
+// even better refactor it for 3 diff fn or 2 that gets a call back
+export function makeTheMove(board: Cell[][], cell: Cell, piece: Piece) {
+  const newBoard = [...board];
+  newBoard[cell.row][cell.col].state = piece;
+
+  const otherPiece = getOtherPiece(piece);
+
+  for (const offset of offSets) {
+    if (!isMoveWithinBoard(cell, offset)) {
+      continue;
+    }
+
+    // start testing direction -> one step at a time
+    let nextCellPosition = addOffsetToCellPosition(cell, offset);
+    let cellsTested = 0;
+
+    while (
+      newBoard[nextCellPosition.row][nextCellPosition.col].state ===
+        otherPiece &&
+      isMoveWithinBoard(nextCellPosition, offset)
+    ) {
+      // step into next position
+      nextCellPosition = addOffsetToCellPosition(nextCellPosition, offset);
+      cellsTested++;
+    }
+
+    // a valid move have being found
+    if (
+      cellsTested > 0 &&
+      newBoard[nextCellPosition.row][nextCellPosition.col].state === piece
+    ) {
+      for (; cellsTested > 0; cellsTested--) {
+        nextCellPosition = subtractOffsetFromCellPosition(
+          nextCellPosition,
+          offset
+        );
+        newBoard[nextCellPosition.row][nextCellPosition.col].state = piece;
+      }
+    }
+  }
+
+  return newBoard;
 }
 
 // function isCellEmpty(cell: Cell): boolean {
@@ -120,4 +166,8 @@ export function getScore(board: Cell[][], piece: Piece) {
     }
   });
   return score;
+}
+
+function getOtherPiece(piece: Piece) {
+  return piece === "black" ? "white" : "black";
 }
