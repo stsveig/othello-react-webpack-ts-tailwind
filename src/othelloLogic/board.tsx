@@ -8,9 +8,9 @@ export type CellPosition = {
 };
 
 type Move = {
-  start: CellPosition;
-  end: CellPosition;
-  offset: CellPosition;
+  // start: CellPosition;
+  endPosition: CellPosition;
+  offset: MoveDirection;
 };
 
 export type ValidMove = Move;
@@ -18,14 +18,8 @@ export type ValidMove = Move;
 export type Cell = {
   row: number;
   col: number;
-} & (
-  | { state: Piece; validBlackMoves?: undefined; validWhiteMoves?: undefined }
-  | {
-      state: "empty";
-      validBlackMoves?: ValidMove[];
-      validWhiteMoves?: ValidMove[];
-    }
-);
+  state: CellState;
+};
 
 export function createInitialBoard(
   rowLength: number,
@@ -61,7 +55,7 @@ function putInitialCellsToBoard(initialCells: Cell[], initialBoard: Cell[][]) {
   });
 }
 
-export const offSets: CellPosition[] = [
+export const offSets = [
   { row: -1, col: -1 },
   { row: 0, col: -1 },
   { row: 1, col: -1 },
@@ -70,18 +64,20 @@ export const offSets: CellPosition[] = [
   { row: -1, col: 1 },
   { row: 0, col: 1 },
   { row: 1, col: 1 },
-];
+] as const;
+
+export type MoveDirection = typeof offSets[number];
 
 export function addOffsetToCellPosition(
   cell: CellPosition,
-  offset: CellPosition
+  offset: MoveDirection
 ): CellPosition {
   return { row: cell.row + offset.row, col: cell.col + offset.col };
 }
 
 export function subtractOffsetFromCellPosition(
   cell: CellPosition,
-  offset: CellPosition
+  offset: MoveDirection
 ): CellPosition {
   return { row: cell.row - offset.row, col: cell.col - offset.col };
 }

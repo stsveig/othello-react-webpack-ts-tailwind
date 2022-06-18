@@ -4,9 +4,9 @@ import {
   CellPosition,
   createInitialBoard,
   iterateOverCells,
+  MoveDirection,
   offSets,
   Piece,
-  subtractOffsetFromCellPosition,
   ValidMove,
 } from "./board";
 
@@ -40,39 +40,42 @@ export function createInitialGameState(
   colLength: number
 ): GameState {
   return {
-    board: createInitialBoard(rowLength, colLength, initialCells),
-    state: "blackTurn",
     blackTeam: "user",
+    state: "blackTurn",
     whiteTeam: "another user",
+    board: createInitialBoard(rowLength, colLength, initialCells),
   };
 }
 
-export function setValidPieceMoves(board: Cell[][], piece: Piece) {
-  const otherPiece = getOtherPiece(piece);
-  // iterating each cell
-  iterateOverCells(board, (cell) => {
-    // [] is cell empty if not return -> next cell
-    if (cell.state !== "empty") return;
-    // iterating each offset
-    for (const offset of offSets) {
-      // [] is move within board
-      if (!isMoveWithinBoard(cell, offset)) {
-        continue;
-      }
-      // [] is current offset valid move
-      const { endPosition, cellsTested } = testOffsetForValidMove(
-        board,
-        cell,
-        offset,
-        otherPiece
-      );
-      // [] if a valid move have being found
-      if (isValidMove(board, endPosition, cellsTested, piece)) {
-        // [] set valid move on the cell
-        setValidMoveToCell(cell, endPosition, offset, piece);
-      }
+export function getValidMovesForCell(
+  cell: Cell,
+  board: Cell[][],
+  currentPieceTurn: Piece
+): ValidMove[] {
+  const validMoves: ValidMove[] = [];
+
+  if (cell.state !== "empty") return [];
+
+  const otherPiece = getOtherPiece(currentPieceTurn);
+
+  for (const offset of offSets) {
+    if (!isMoveWithinBoard(cell, offset)) {
+      continue;
     }
-  });
+
+    const { endPosition, cellsTested } = testOffsetForValidMove(
+      board,
+      cell,
+      offset,
+      otherPiece
+    );
+
+    if (isValidMove(board, endPosition, cellsTested, currentPieceTurn)) {
+      validMoves.push({ endPosition, offset });
+    }
+  }
+
+  return validMoves;
 }
 
 function isValidMove(
@@ -89,7 +92,7 @@ function isValidMove(
 function testOffsetForValidMove(
   board: Cell[][],
   cell: CellPosition,
-  offset: CellPosition,
+  offset: MoveDirection,
   otherPiece: Piece
 ) {
   let nextCellPosition = addOffsetToCellPosition(cell, offset);
@@ -108,44 +111,16 @@ function testOffsetForValidMove(
   return { endPosition: nextCellPosition, cellsTested };
 }
 
-function setValidMoveToCell(
-  startPosition: CellPosition,
-  endPosition: CellPosition,
-  offset: CellPosition,
-  piece: Piece
-) {
-  if (piece === "black") {
-    const validBlackMove: ValidMove = {
-      start: { row: startPosition.row, col: startPosition.col },
-      end: { row: endPosition.row, col: endPosition.col },
-      offset,
-    };
-    console.log(validBlackMove);
-  } else {
-    const validWhiteMove: ValidMove = {
-      start: { row: startPosition.row, col: startPosition.col },
-      end: { row: endPosition.row, col: endPosition.col },
-      offset,
-    };
-    console.log(validWhiteMove);
-  }
-}
+// function flipCells(board, endPosition, offset, cellsTested, piece) {
+//   const newBoard = [...board];
 
-function flipCells() {
-  // only if a valid move have being found
-  if (
-    cellsTested > 0 &&
-    newBoard[nextCellPosition.row][nextCellPosition.col].state === piece
-  ) {
-    for (; cellsTested > 0; cellsTested--) {
-      nextCellPosition = subtractOffsetFromCellPosition(
-        nextCellPosition,
-        offset
-      );
-      newBoard[nextCellPosition.row][nextCellPosition.col].state = piece;
-    }
-  }
-}
+//   for (; cellsTested > 0; cellsTested--) {
+//     endPosition = subtractOffsetFromCellPosition(endPosition, offset);
+//     newBoard[endPosition.row][endPosition.col].state = piece;
+//   }
+
+//   return newBoard;
+// }
 
 // [] check based on 8x8 board!
 function isMoveWithinBoard(
