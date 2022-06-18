@@ -16,17 +16,10 @@ export type TurnState = PieceTurn | "gameOver";
 
 export type GameState = {
   board: Cell[][];
-  // state: "playerOneTurn" | "playerTwoTurn" | "gameOver";
-  // state: "opponentOneTurn" | "opponentTwoTurn" | "gameOver";
   state: TurnState;
-} & {
   whiteTeam: string;
   blackTeam: string;
 };
-// | {
-//     playerOnePiece: "white";
-//     playerTwoPiece: "black";
-//   }
 
 const initialCells: Cell[] = [
   { row: 3, col: 3, state: "white" },
@@ -98,12 +91,10 @@ function testOffsetForValidMove(
   let nextCellPosition = addOffsetToCellPosition(cell, offset);
   let cellsTested = 0;
 
-  // start testing direction -> one step at a time
   while (
     board[nextCellPosition.row][nextCellPosition.col].state === otherPiece &&
     isMoveWithinBoard(nextCellPosition, offset)
   ) {
-    // step into next position
     nextCellPosition = addOffsetToCellPosition(nextCellPosition, offset);
     cellsTested++;
   }
@@ -147,7 +138,10 @@ export function currentPieceTurn(turnState: TurnState): Piece | "gameOver" {
 }
 
 export function isCurrentPieceTurn(turn: TurnState, piece: Piece): boolean {
-  return turn.split("Turn")[0] !== piece;
+  if (turn === "gameOver") return false;
+  if (turn === "blackTurn" && piece === "black") return true;
+  if (turn === "whiteTurn" && piece === "white") return true;
+  return false;
 }
 
 export function getScore(board: Cell[][], piece: Piece) {

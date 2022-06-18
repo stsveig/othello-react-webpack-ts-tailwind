@@ -18,7 +18,7 @@ export const GameStats: React.FunctionComponent<GameStatsPorps> = ({
       <div
         className={`${
           // gameState.state.split("Turn")[0] !== piece ? "hidden" : ""
-          isMyTurn ? "hidden" : ""
+          isMyTurn ? "" : "hidden"
         } bg-sky-600 rounded-full px-1 text-xs absolute bottom-1 left-[35%]`}
       >
         Your turn
