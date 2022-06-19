@@ -38,6 +38,12 @@ export function createInitialBoard(
   return initialBoard;
 }
 
+function putInitialCellsToBoard(initialCells: Cell[], initialBoard: Cell[][]) {
+  initialCells.forEach(({ row, col, state }) => {
+    initialBoard[row][col].state = state;
+  });
+}
+
 export function iterateOverCells(
   board: Cell[][],
   callback: (cell: Cell) => void
@@ -46,12 +52,6 @@ export function iterateOverCells(
     row.forEach((cell) => {
       callback(cell);
     });
-  });
-}
-
-function putInitialCellsToBoard(initialCells: Cell[], initialBoard: Cell[][]) {
-  initialCells.forEach(({ row, col, state }) => {
-    initialBoard[row][col].state = state;
   });
 }
 

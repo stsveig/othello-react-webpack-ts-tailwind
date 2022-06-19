@@ -18,12 +18,92 @@ npm i
 npm start
 ```
 
-## Logic
+### Cell
+
+- Cell - row, col, state
+- Cell Position - row, col
+- Piece - "black" | "white"
+- Cell State - Piece | “empty”
+
+- offset (-1,0|-1,-1|-1,+1|…)
+
+- addOffsetToPoint(cell, offset)
+- subtractOffsetToPoint(cell, offset)
 
 ### Game & Board
 
-- Cell[][] | Cell[]
+- Team - WIP
+- Board - Cell[][]
+- Winner - Piece | "draw" | undefined
+- Turn State - Piece Turn | "gameOver"
+- Piece Turn - "whiteTurn" | "blackTurn"
+- Valid Move - startPosition, endPosition, offset
+- Game State - winner, board, whiteTeam, blackTeam, state, vanillaOthello
+
 - class Game | React state with helper functions
+
+- iterateOverCells(board, callBack) => void
+- putInitialCellsToBoard(initialCells, initialBoard)
+- createInitialBoard(rowLength, colLength, initialCells) => Board
+- testOffsetForValidMove(board, cell, offset, otherPiece) => endPosition, cellsTested
+
+- doesPieceHasValidMove(board, piece) => boolean
+- getValidMovesForCell(cell, board, currentPieceTurn) => ValidMove[]
+- isValidMove(piece, board, cellsTested, endPosition)
+- isMoveWithinBoard(cellPosition, offset) => boolean
+
+## Features
+
+- [ ] login
+- [x] pass turn
+- [x] new game/reset
+- [ ] Offline support
+- [ ] custome size for the board
+- [x] same machine human vs human
+
+- [ ] team ? player[]
+- [ ] player vs team | team vs team
+- [ ] player ? [ human | bot(ai) | websocket ]
+- [ ] turn time / max turn time
+
+- [ ] Move history
+- [ ] keyboard support
+- [ ] Customize players | icons | users
+- [ ] Local Storage (users, last game, history)
+
+- [ ] audio ?
+- [ ] best move, rank system for each cell… depends on the game ?
+- [ ] random cells hiding things (good or bad, cancel the turn, flip disks with opponent color…), maybe not :)
+- [ ]
+
+## UI
+
+### basic UI for playground
+
+- [x] reset button
+- [x] current turn
+- [x] end game stats
+- [x] next & prev buttons
+- [x] hints for valid moves
+- [x] Grid layout with board & pieces
+- [ ]
+
+### UI to Implement
+
+- [x] valid box
+- [x] Mouse click
+- [x] pass button
+- [x] non valid box
+- [x] mobile support
+  - [x] horizontal
+  - [ ] vertical
+- [x] menu for toggling Vanilla Othello
+- [ ] Transition on the box’s when mouse over
+- [ ] Icon | svg | emoji of each player piece ???
+- [ ]
+
+### raw thoughts
+
 - [x] get legal moves | needs board & player
   - iterate through all cells
   - check to find legal moves
@@ -50,7 +130,7 @@ npm start
       - step into the next cell and count++
     - **if** we **moved X steps** and the last cell belongs to the player who started the move
       - flip the row of legal move
-- [ ] Lets PLAY
+- [x] Lets PLAY
   - set board
   - set first player
   - game is **ON**…
@@ -61,52 +141,3 @@ npm start
   - make the move
   - turn switch (player)
 - [x] get score
-
-### Cell
-
-- Player | “empty”
-- Player → player1,player2 | -1,1 | W, B | 1,2
-- offset (-1,0|-1,-1|-1,+1|…)
-- addOffsetToPoint(point, offset)
-- subOffsetToPoint(point, offset)
-
-### React things
-
--
--
-
-## Features
-
-- [ ] player 1 vs player 2, human vs human? human vs bot ? bot vs bot ?
-- [ ] player vs team, team vs team, ...
-- [ ] team ? { human, bot, server }
-- [ ] pass turn
-- [ ] new game/reset
-- [ ] size of the board
-- [ ] Offline support
-- [ ] turn time / max turn time
-- [ ] Move history
-- [ ] keyboard support
-- [ ] WebSocket
-- [ ] Customize players | icons | users
-- [ ] Local Storage (users, last game, history)
-- [ ] audio ?
-- [ ] best move, rank system for each cell… depends on the game ?
-- [ ] random cells hiding things (good or bad, cancel the turn, flip disks with opponent color…)
-- [ ]
-
-## UI
-
-### basic UI for playground
-
-- [ ] Grid layout with svg for disks
-- [ ]
-
-### UI to Implement
-
-- [ ] Transition on the box’s when mouse over
-- [ ] valid box
-- [ ] non valid box
-- [ ] Icon | svg | emoji of each player disks ???
-- [ ] Mouse click
-- [ ]
