@@ -12,8 +12,8 @@ type GameStatsPorps = {
 export const GameStats: React.FunctionComponent<GameStatsPorps> = ({
   piece,
 }) => {
-  const isMyTurn = useIsCurrentPieceTurn(piece);
   const myScore = usePieceScore(piece);
+  const isMyTurn = useIsCurrentPieceTurn(piece);
 
   return (
     <div className="bg-[#303030] rounded-md flex items-center h-32 relative">

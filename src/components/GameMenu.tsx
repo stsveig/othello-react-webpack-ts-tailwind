@@ -1,5 +1,5 @@
-import React from "react";
-import { Menu, Transition } from "@headlessui/react";
+import React, { useState } from "react";
+import { Menu, Switch, Transition } from "@headlessui/react";
 import { DotsVerticalIcon } from "@heroicons/react/solid";
 
 function classNames(...classes: string[]): string {
@@ -7,6 +7,8 @@ function classNames(...classes: string[]): string {
 }
 
 export const GameMenu: React.FunctionComponent = () => {
+  const [enabled, setEnabled] = useState(true);
+
   return (
     <Menu as="div" className="absolute right-1 top-5 inline-block text-left">
       <div>
@@ -49,21 +51,29 @@ export const GameMenu: React.FunctionComponent = () => {
                     "block px-4 py-2 text-sm"
                   )}
                 >
-                  Support
+                  another cool feature
                 </a>
               )}
             </Menu.Item>
             <Menu.Item>
               {({ active }) => (
-                <a
-                  href="#"
-                  className={classNames(
-                    active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                    "block px-4 py-2 text-sm"
-                  )}
-                >
-                  License
-                </a>
+                <div className="flex items-center justify-between px-4 py-2 text-sm">
+                  <div>Vanilla Othello</div>
+                  <Switch
+                    checked={enabled}
+                    onChange={setEnabled}
+                    className={`${
+                      enabled ? "bg-blue-600" : "bg-gray-200"
+                    } relative inline-flex h-6 w-11 items-center rounded-full`}
+                  >
+                    <span className="sr-only">Enable notifications</span>
+                    <span
+                      className={`${
+                        enabled ? "translate-x-6" : "translate-x-1"
+                      } inline-block h-4 w-4 transform rounded-full bg-white`}
+                    />
+                  </Switch>
+                </div>
               )}
             </Menu.Item>
             <form method="POST" action="#">

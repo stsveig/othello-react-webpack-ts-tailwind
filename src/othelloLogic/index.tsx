@@ -10,15 +10,20 @@ import {
   ValidMove,
 } from "./board";
 
-export type PieceTurn = "whiteTurn" | "blackTurn";
+export type Team = string;
 
 export type TurnState = PieceTurn | "gameOver";
 
+export type Winner = Piece | "draw" | undefined;
+
+export type PieceTurn = "whiteTurn" | "blackTurn";
+
 export type GameState = {
+  winner: Winner;
   board: Cell[][];
+  whiteTeam: Team;
+  blackTeam: Team;
   state: TurnState;
-  whiteTeam: string;
-  blackTeam: string;
 };
 
 const initialCells: Cell[] = [
@@ -33,6 +38,7 @@ export function createInitialGameState(
   colLength: number
 ): GameState {
   return {
+    winner: undefined,
     blackTeam: "user",
     state: "blackTurn",
     whiteTeam: "another user",
@@ -40,14 +46,10 @@ export function createInitialGameState(
   };
 }
 
-export function doesTeamHaveValidMove(
-  board: Cell[][],
-  currentPiece: Piece
-): boolean {
+export function doesPieceHasValidMove(board: Cell[][], piece: Piece): boolean {
   let check = false;
   iterateOverCells(board, (cell) => {
-    if (getValidMovesForCell(cell, board, currentPiece).length > 0)
-      check = true;
+    if (getValidMovesForCell(cell, board, piece).length > 0) check = true;
   });
   return check;
 }
@@ -55,10 +57,9 @@ export function doesTeamHaveValidMove(
 export function getValidMovesForCell(
   cell: Cell,
   board: Cell[][],
-  currentPieceTurn: Piece | "gameOver"
+  currentPieceTurn: Piece
 ): ValidMove[] {
   const validMoves: ValidMove[] = [];
-  if (currentPieceTurn === "gameOver") return [];
   if (cell.state !== "empty") return [];
 
   const otherPiece = getOtherPiece(currentPieceTurn);
@@ -75,7 +76,7 @@ export function getValidMovesForCell(
       otherPiece
     );
 
-    if (isValidMove(board, endPosition, cellsTested, currentPieceTurn)) {
+    if (isValidMove(currentPieceTurn, board, cellsTested, endPosition)) {
       validMoves.push({
         startPosition: { row: cell.row, col: cell.col },
         endPosition,
@@ -88,10 +89,10 @@ export function getValidMovesForCell(
 }
 
 function isValidMove(
+  piece: Piece,
   board: Cell[][],
-  endPosition: CellPosition,
   cellsTested: number,
-  piece: Piece
+  endPosition: CellPosition
 ) {
   return (
     cellsTested > 0 && board[endPosition.row][endPosition.col].state === piece
@@ -131,17 +132,6 @@ function isMoveWithinBoard(
   return true;
 }
 
-export function currentPieceTurn(turnState: TurnState): Piece | "gameOver" {
-  if (turnState === "gameOver") {
-    return "gameOver";
-  } else {
-    if (turnState === "blackTurn") {
-      return "black";
-    }
-    return "white";
-  }
-}
-
 export function isCurrentPieceTurn(turn: TurnState, piece: Piece): boolean {
   if (turn === "gameOver") return false;
   if (turn === "blackTurn" && piece === "black") return true;
@@ -159,6 +149,17 @@ export function getScore(board: Cell[][], piece: Piece) {
   return score;
 }
 
+export function getPieceFromTurnState(pieceTurn: PieceTurn): Piece {
+  if (pieceTurn === "blackTurn") {
+    return "black";
+  }
+  return "white";
+}
+
 export function getOtherPiece(piece: Piece) {
   return piece === "black" ? "white" : "black";
+}
+
+export function getOtherPlayer(turn: PieceTurn): PieceTurn {
+  return turn === "blackTurn" ? "whiteTurn" : "blackTurn";
 }

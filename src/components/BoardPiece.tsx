@@ -1,10 +1,7 @@
 import React from "react";
 import { Transition } from "@headlessui/react";
-import {
-  useCurrentPieceTurn,
-  useOthelloGameState,
-} from "../context/OthelloContext";
-import { getValidMovesForCell } from "../othelloLogic";
+import { useOthelloGameState } from "../context/OthelloContext";
+import { getPieceFromTurnState, getValidMovesForCell } from "../othelloLogic";
 import { Cell, ValidMove } from "../othelloLogic/board";
 
 type BoardPieceProps = {
@@ -13,13 +10,15 @@ type BoardPieceProps = {
 
 const BoardPiece = ({ cell }: BoardPieceProps) => {
   const { game, applyMovesToBoard } = useOthelloGameState();
-  const currentPieceTurn = useCurrentPieceTurn();
+  let validMoves: ValidMove[] = [];
 
-  const validMoves: ValidMove[] = getValidMovesForCell(
-    cell,
-    game.board,
-    currentPieceTurn
-  );
+  if (game.state !== "gameOver") {
+    validMoves = getValidMovesForCell(
+      cell,
+      game.board,
+      getPieceFromTurnState(game.state)
+    );
+  }
 
   let pieceStyle = "";
   const basicPieceStyle = "rounded-full w-[85%] h-[85%]";
@@ -32,13 +31,9 @@ const BoardPiece = ({ cell }: BoardPieceProps) => {
     pieceStyle = cell.state === "black" ? "bg-black" : "bg-white";
   }
 
-  function handleCellClick(cell: Cell) {
-    if (game.state !== "gameOver") {
-      if (validMoves.length) {
-        applyMovesToBoard(validMoves);
-      } else {
-        console.log("no valid moves");
-      }
+  function handleCellClick() {
+    if (game.state !== "gameOver" && validMoves.length) {
+      applyMovesToBoard(validMoves);
     }
   }
 
@@ -46,7 +41,7 @@ const BoardPiece = ({ cell }: BoardPieceProps) => {
     <>
       <div
         className="bg-green-600 w-full  aspect-square flex items-center justify-center"
-        onClick={() => handleCellClick(cell)}
+        onClick={() => handleCellClick()}
       >
         <Transition
           as="div"
