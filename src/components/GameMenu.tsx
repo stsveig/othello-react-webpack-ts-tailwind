@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { Menu, Switch, Transition } from "@headlessui/react";
 import { DotsVerticalIcon } from "@heroicons/react/solid";
+
 import { useOthelloGameState } from "../context/OthelloContext";
 
 function classNames(...classes: string[]): string {
@@ -35,28 +36,26 @@ export const GameMenu: React.FunctionComponent = () => {
           <div className="py-1">
             <Menu.Item>
               {({ active }) => (
-                <a
-                  href="#"
+                <div
                   className={classNames(
                     active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                     "block px-4 py-2 text-sm"
                   )}
                 >
                   Account settings
-                </a>
+                </div>
               )}
             </Menu.Item>
             <Menu.Item>
               {({ active }) => (
-                <a
-                  href="#"
+                <div
                   className={classNames(
                     active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                     "block px-4 py-2 text-sm"
                   )}
                 >
                   another cool feature
-                </a>
+                </div>
               )}
             </Menu.Item>
             <Menu.Item>
@@ -80,21 +79,18 @@ export const GameMenu: React.FunctionComponent = () => {
                 </div>
               )}
             </Menu.Item>
-            <form method="POST" action="#">
-              <Menu.Item>
-                {({ active }) => (
-                  <button
-                    type="submit"
-                    className={classNames(
-                      active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                      "block w-full text-left px-4 py-2 text-sm"
-                    )}
-                  >
-                    Sign out
-                  </button>
-                )}
-              </Menu.Item>
-            </form>
+            <Menu.Item>
+              {({ active }) => (
+                <button
+                  className={classNames(
+                    active ? "bg-gray-100 text-gray-900" : "text-gray-700",
+                    "block w-full text-left px-4 py-2 text-sm"
+                  )}
+                >
+                  Sign out
+                </button>
+              )}
+            </Menu.Item>
           </div>
         </Menu.Items>
       </Transition>

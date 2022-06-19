@@ -49,11 +49,13 @@ export function createInitialGameState(
 }
 
 export function doesPieceHasValidMove(board: Cell[][], piece: Piece): boolean {
-  let check = false;
+  let hasValidMove = false;
   iterateOverCells(board, (cell) => {
-    if (getValidMovesForCell(cell, board, piece).length > 0) check = true;
+    if (getValidMovesForCell(cell, board, piece).length > 0) {
+      hasValidMove = true;
+    }
   });
-  return check;
+  return hasValidMove;
 }
 
 export function getValidMovesForCell(
@@ -121,7 +123,7 @@ function testOffsetForValidMove(
   return { endPosition: nextCellPosition, cellsTested };
 }
 
-// [] check based on 8x8 board!
+// [] based on 8x8 board!
 function isMoveWithinBoard(
   { col, row }: CellPosition,
   offset: CellPosition

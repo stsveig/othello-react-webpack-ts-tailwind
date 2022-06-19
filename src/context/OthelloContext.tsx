@@ -39,38 +39,45 @@ export function OthelloProvider({ children }: PropsWithChildren) {
   function applyMovesToBoard(validMoves: ValidMove[]) {
     if (game.state !== "gameOver") {
       const turnState = game.state;
-      const newBoard = [...game.board];
 
-      makeTheFlip(validMoves, newBoard, turnState);
+      const newBoardWithMoves = flipMovesToNewBoard(
+        game.board,
+        turnState,
+        validMoves
+      );
 
-      if (doesPlayerHaveValidMove(newBoard, getOtherPlayer(turnState))) {
+      if (
+        doesPlayerHaveValidMove(newBoardWithMoves, getOtherPlayer(turnState))
+      ) {
         setGame((prevGame) => {
           return {
             ...prevGame,
-            board: newBoard,
+            board: newBoardWithMoves,
             state: getOtherPlayer(turnState),
           };
         });
         // no valid moves to other player, turn goes back to current player
-      } else if (doesPlayerHaveValidMove(newBoard, turnState)) {
+      } else if (doesPlayerHaveValidMove(newBoardWithMoves, turnState)) {
         setGame((prevGame) => {
           return {
             ...prevGame,
-            board: newBoard,
+            board: newBoardWithMoves,
             state: turnState,
           };
         });
       } else {
-        gameOver(newBoard);
+        gameOver(newBoardWithMoves);
       }
     }
   }
 
-  function makeTheFlip(
-    validMoves: ValidMove[],
-    newBoard: Cell[][],
-    turnState: PieceTurn
-  ) {
+  function flipMovesToNewBoard(
+    board: Cell[][],
+    turnState: PieceTurn,
+    validMoves: ValidMove[]
+  ): Cell[][] {
+    const newBoard = [...board];
+
     validMoves.forEach(({ startPosition, endPosition, offset }) => {
       while (
         startPosition.row !== endPosition.row ||
@@ -83,6 +90,8 @@ export function OthelloProvider({ children }: PropsWithChildren) {
         startPosition.row += offset.row;
       }
     });
+
+    return newBoard;
   }
 
   function doesPlayerHaveValidMove(

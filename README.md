@@ -4,11 +4,11 @@
 
 Othello is a strategy board game for two players played on an 8x8 board.
 
+![current UI](currentUI.png)
+
 [https://en.wikipedia.org/wiki/Reversi#Rules](https://en.wikipedia.org/wiki/Reversi#Rules)
 
 [https://www.eothello.com/](https://www.eothello.com/)
-
-“a minute to learn, a lifetime to master”
 
 ### how to run
 
