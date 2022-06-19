@@ -40,13 +40,25 @@ export function createInitialGameState(
   };
 }
 
+export function doesTeamHaveValidMove(
+  board: Cell[][],
+  currentPiece: Piece
+): boolean {
+  let check = false;
+  iterateOverCells(board, (cell) => {
+    if (getValidMovesForCell(cell, board, currentPiece).length > 0)
+      check = true;
+  });
+  return check;
+}
+
 export function getValidMovesForCell(
   cell: Cell,
   board: Cell[][],
-  currentPieceTurn: Piece
+  currentPieceTurn: Piece | "gameOver"
 ): ValidMove[] {
   const validMoves: ValidMove[] = [];
-
+  if (currentPieceTurn === "gameOver") return [];
   if (cell.state !== "empty") return [];
 
   const otherPiece = getOtherPiece(currentPieceTurn);
@@ -64,7 +76,11 @@ export function getValidMovesForCell(
     );
 
     if (isValidMove(board, endPosition, cellsTested, currentPieceTurn)) {
-      validMoves.push({ endPosition, offset });
+      validMoves.push({
+        startPosition: { row: cell.row, col: cell.col },
+        endPosition,
+        offset,
+      });
     }
   }
 
@@ -101,17 +117,6 @@ function testOffsetForValidMove(
 
   return { endPosition: nextCellPosition, cellsTested };
 }
-
-// function flipCells(board, endPosition, offset, cellsTested, piece) {
-//   const newBoard = [...board];
-
-//   for (; cellsTested > 0; cellsTested--) {
-//     endPosition = subtractOffsetFromCellPosition(endPosition, offset);
-//     newBoard[endPosition.row][endPosition.col].state = piece;
-//   }
-
-//   return newBoard;
-// }
 
 // [] check based on 8x8 board!
 function isMoveWithinBoard(
@@ -154,6 +159,6 @@ export function getScore(board: Cell[][], piece: Piece) {
   return score;
 }
 
-function getOtherPiece(piece: Piece) {
+export function getOtherPiece(piece: Piece) {
   return piece === "black" ? "white" : "black";
 }

@@ -8,7 +8,7 @@ export type CellPosition = {
 };
 
 type Move = {
-  // start: CellPosition;
+  startPosition: CellPosition;
   endPosition: CellPosition;
   offset: MoveDirection;
 };
