@@ -36,13 +36,14 @@ const initialCells: Cell[] = [
 
 export function createInitialGameState(
   rowLength: number,
-  colLength: number
+  colLength: number,
+  vanillaOthello = false
 ): GameState {
   return {
     winner: undefined,
     blackTeam: "user",
     state: "blackTurn",
-    vanillaOthello: false,
+    vanillaOthello: vanillaOthello,
     whiteTeam: "another user",
     board: createInitialBoard(rowLength, colLength, initialCells),
   };

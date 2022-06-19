@@ -106,7 +106,9 @@ export function OthelloProvider({ children }: PropsWithChildren) {
   }
 
   function resetGame() {
-    setGame(createInitialGameState(ROW_LENGTH, COL_LENGTH));
+    setGame((prevGame) =>
+      createInitialGameState(ROW_LENGTH, COL_LENGTH, prevGame.vanillaOthello)
+    );
   }
 
   function passMyTurn() {
