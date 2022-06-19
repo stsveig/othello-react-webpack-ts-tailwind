@@ -1,16 +1,20 @@
 import React, { useState } from "react";
 import { Menu, Switch, Transition } from "@headlessui/react";
 import { DotsVerticalIcon } from "@heroicons/react/solid";
+import { useOthelloGameState } from "../context/OthelloContext";
 
 function classNames(...classes: string[]): string {
   return classes.filter(Boolean).join(" ");
 }
 
 export const GameMenu: React.FunctionComponent = () => {
-  const [enabled, setEnabled] = useState(true);
+  const { game, toggleVanillaOthello } = useOthelloGameState();
 
   return (
-    <Menu as="div" className="absolute right-1 top-5 inline-block text-left">
+    <Menu
+      as="div"
+      className="absolute right-1 top-5 inline-block text-left select-none"
+    >
       <div>
         <Menu.Button className="rounded-full flex items-center text-gray-400 hover:text-gray-600">
           <span className="sr-only">Open options</span>
@@ -60,16 +64,16 @@ export const GameMenu: React.FunctionComponent = () => {
                 <div className="flex items-center justify-between px-4 py-2 text-sm">
                   <div>Vanilla Othello</div>
                   <Switch
-                    checked={enabled}
-                    onChange={setEnabled}
+                    checked={game.vanillaOthello}
+                    onChange={() => toggleVanillaOthello()}
                     className={`${
-                      enabled ? "bg-blue-600" : "bg-gray-200"
+                      game.vanillaOthello ? "bg-blue-600" : "bg-gray-200"
                     } relative inline-flex h-6 w-11 items-center rounded-full`}
                   >
                     <span className="sr-only">Enable notifications</span>
                     <span
                       className={`${
-                        enabled ? "translate-x-6" : "translate-x-1"
+                        game.vanillaOthello ? "translate-x-6" : "translate-x-1"
                       } inline-block h-4 w-4 transform rounded-full bg-white`}
                     />
                   </Switch>

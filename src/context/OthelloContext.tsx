@@ -25,6 +25,7 @@ type OthelloContext = {
   game: GameState;
   resetGame: () => void;
   passMyTurn: () => void;
+  toggleVanillaOthello: () => void;
   applyMovesToBoard: (validMoves: ValidMove[]) => void;
 };
 
@@ -104,6 +105,10 @@ export function OthelloProvider({ children }: PropsWithChildren) {
       setGame({ ...game, state: getOtherPlayer(game.state) });
   }
 
+  function toggleVanillaOthello() {
+    setGame({ ...game, vanillaOthello: !game.vanillaOthello });
+  }
+
   return (
     <OthelloContext.Provider
       value={{
@@ -111,6 +116,7 @@ export function OthelloProvider({ children }: PropsWithChildren) {
         resetGame,
         passMyTurn,
         applyMovesToBoard,
+        toggleVanillaOthello,
       }}
     >
       {children}
@@ -134,6 +140,20 @@ export function usePieceScore(piece: Piece) {
   return useMemo(() => {
     return getScore(game.board, piece);
   }, [game.board, piece]);
+}
+
+export function useWinner() {
+  let winner: Piece | "draw";
+  const scoreBlack = usePieceScore("black");
+  const scoreWhite = usePieceScore("white");
+
+  if (scoreBlack === scoreWhite) {
+    return "draw";
+  } else {
+    winner = scoreBlack > scoreWhite ? "black" : "white";
+  }
+
+  return winner;
 }
 
 export function useIsCurrentPieceTurn(piece: Piece) {

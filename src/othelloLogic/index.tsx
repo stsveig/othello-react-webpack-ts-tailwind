@@ -24,6 +24,7 @@ export type GameState = {
   whiteTeam: Team;
   blackTeam: Team;
   state: TurnState;
+  vanillaOthello: boolean;
 };
 
 const initialCells: Cell[] = [
@@ -41,6 +42,7 @@ export function createInitialGameState(
     winner: undefined,
     blackTeam: "user",
     state: "blackTurn",
+    vanillaOthello: false,
     whiteTeam: "another user",
     board: createInitialBoard(rowLength, colLength, initialCells),
   };
