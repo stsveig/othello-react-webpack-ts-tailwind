@@ -1,5 +1,7 @@
 # Welcome to Othello App
 
+## [live app](https://playothello.netlify.app/)
+
 ### Othello (a.k.a Reversi)
 
 Othello is a strategy board game for two players played on an 8x8 board.
